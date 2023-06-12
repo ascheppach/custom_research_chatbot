@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 
 
 
-
 def merge_hyphenated_words(text: str) -> str:
     return re.sub(r"(\w)-\n(\w)", r"\1\2", text)
 
