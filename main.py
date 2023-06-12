@@ -5,15 +5,25 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.schema import HumanMessage, AIMessage
 from dotenv import load_dotenv
 
+from document_helper import create_vectorstore_embeddings
+import argparse
 
-def make_chain():
+# Create the argument parser
+parser = argparse.ArgumentParser(description='Initialiaze the ChatBot in order to chat with local stored pdf files')
+
+# Add arguments
+parser.add_argument('datafolder', type=str, help='Folder there all the PDFs are stored')
+args = parser.parse_args()
+
+
+def create_chain():
 
     model = ChatOpenAI(
         model_name="gpt-3.5-turbo",
         temperature="0",
-        openai_api_key="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"
+        openai_api_key="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"
     )
-    embedding = OpenAIEmbeddings(openai_api_key="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")
+    embedding = OpenAIEmbeddings(openai_api_key="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")
 
     vector_store = Chroma(
         collection_name="nas-documents",
@@ -30,9 +40,14 @@ def make_chain():
 
 
 if __name__ == "__main__":
+
     load_dotenv()
 
-    chain = make_chain()
+    pdf_directory = args.datafolder
+    # pdf_directory = 'C:/Users/SEPA/custom_chatbot/data/'
+    create_vectorstore_embeddings(pdf_directory)
+
+    chain = create_chain()
     chat_history = []
 
     while True:

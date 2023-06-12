@@ -68,29 +68,31 @@ def text_to_docs(text):
 
 
 load_dotenv()
-pdf_directory = 'C:/Users/SEPA/custom_chatbot/data/'
+# pdf_directory = 'C:/Users/SEPA/custom_chatbot/data/'
 
 def create_vectorstore_embeddings(pdf_directory):
     loader = DirectoryLoader(pdf_directory, glob="./*.pdf", loader_cls=PyPDFLoader)
     documents = loader.load()
     raw_pages = []
+    # create a Tuple with page, metadata (pdf name / source) and corresponding text
     for page in documents:
-        # print(page.metadata['page']+1)
-        # print(page.page_content)
         text = page.page_content
         metadata = page.metadata['source']
         raw_pages.append((page.metadata['page']+1, metadata, text))
 
+    # define text-preprocessing functions
     cleaning_functions = [
         merge_hyphenated_words,
         fix_newlines,
         remove_multiple_newlines,
     ]
+    # apply text-preprocessing functions
     cleaned_text_pdf = clean_text(raw_pages, cleaning_functions)
+    # split the text to create the document chunks
     document_chunks = text_to_docs(cleaned_text_pdf)
 
-    # Step 3 + 4: Generate embeddings and store them in DB
-    embeddings = OpenAIEmbeddings(openai_api_key="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")
+    # create embeddings and vectorstore
+    embeddings = OpenAIEmbeddings(openai_api_key="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")
     vector_store = Chroma.from_documents(
         document_chunks,
         embeddings,
@@ -98,5 +100,5 @@ def create_vectorstore_embeddings(pdf_directory):
         persist_directory="data/chroma",
     )
 
-    # Daten wurden jetzt lokal bei uns persistiert
+    # persist the vectorstore locally
     vector_store.persist()
