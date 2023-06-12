@@ -1,6 +1,6 @@
 # custom_research_chatbot
 
-This repository enables the user to upload his own pdf file in the folder data. __
+This repository enables the user to upload his own pdf file in the folder data. <br />
 Afterwards he just needs to run following command via Terminal:
 
 ```
